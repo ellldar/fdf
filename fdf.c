@@ -12,6 +12,13 @@
 
 #include "fdf.h"
 
+int	deal_key(int key, void *param)
+{
+	ft_putnbr(key);
+	ft_putchar('\n');
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	void	*mlx_ptr;
@@ -24,6 +31,8 @@ int	main(int argc, char **argv)
 		ft_putstr("\n");
 		mlx_ptr = mlx_init();
 		win_ptr = mlx_new_window(mlx_ptr, 1000, 720, "FDF");
+		mlx_pixel_put(mlx_ptr, win_ptr, 250, 250, 0xFFFFFF);
+		mlx_key_hook(win_ptr, deal_key, (void *)0);
 		mlx_loop(mlx_ptr);
 	}
 	else
