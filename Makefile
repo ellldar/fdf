@@ -1,6 +1,7 @@
 NAME = fdf
-SRCS = fdf.c
+SRCS = fdf.c src/read_ops.c src/input_ops.c src/draw_ops.c src/helpers.c
 FLGS = -Wall -Werror -Wextra
+SANIT = -fsanitize=address
 HDR = -I.
 LIBFT_DIR = libft
 LIBX_DIR = minilibx_macos
@@ -23,6 +24,14 @@ $(LIBFT):
 
 $(LIBX):
 	@make -C $(LIBX_DIR)
+
+debug:
+	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX) -g
+	lldb $(NAME) -- $(INPUT)
+
+sanit:
+	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX) $(SANIT) -g
+	./$(NAME) $(INPUT)
 
 clean:
 	make -C $(LIBFT_DIR) clean
