@@ -9,7 +9,7 @@ LIBS = -L ./$(LIBFT_DIR) -lft -L ./$(LIBX_DIR) -lmlx
 LIBFT = $(LIBFT_DIR)/libft.a
 LIBX = $(LIBX_DIR)/libmlx.a
 MLX = -framework OpenGL -framework AppKit
-INPUT = empty.fdf
+INPUT = sample.fdf
 
 .PHONY: all clean fclean re
 
