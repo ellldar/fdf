@@ -19,19 +19,28 @@ static void	init_hooks(t_scope *scope, t_key *key, t_mouse *mouse)
 	mlx_hook(scope->win_ptr, 3, 0, key_release, scope);
 	mlx_hook(scope->win_ptr, 4, 0, mouse_press, scope);
 	mlx_hook(scope->win_ptr, 5, 0, mouse_release, scope);
-	mlx_hook(scope->win_ptr, 6, 0, motion_track, scope);
-	mlx_hook(scope->win_ptr, 12, 0, expose_hook, scope);
-	mlx_hook(scope->win_ptr, 17, 0, exit_hook, scope);
+//	mlx_hook(scope->win_ptr, 6, 0, motion_track, scope);
+//	mlx_hook(scope->win_ptr, 12, 0, expose_hook, scope);
+//	mlx_hook(scope->win_ptr, 17, 0, exit_hook, scope);
 }
 
-static void	init_event_handler(t_scope *scope)
+static void	init_event_handler(t_scope *scope, int width, int height)
 {
 	void	*img_ptr;
 	t_key	*key;
 	t_mouse	*mouse;
+	int 	r;
 
-	img_ptr = mlx_new_image(mlx_ptr, win_ptr, 1200, 800);
+	img_ptr = mlx_new_image(scope->win_ptr, width, height);
 	scope->img_ptr = img_ptr;
+	draw_line(scope, 100, 100, 500, 300);
+	r = 0;
+	while (r < 350)
+	{
+		draw_circle(scope, 600, 400, r);
+		r += 10;
+	}
+	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img_ptr, 0, 0);
 	init_hooks(scope, key, mouse);
 }
 
@@ -50,8 +59,8 @@ int			main(int argc, char **argv)
 		data = read_data(fd);
 		mlx_ptr = mlx_init();
 		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
-		scope = init_scope(mlx_ptr, wintr, 600, 400);
-		init_event_handler(scope);
+		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);
+		init_event_handler(scope, 1200, 800);
 		mlx_loop(mlx_ptr);
 	}
 	else

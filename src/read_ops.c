@@ -18,5 +18,5 @@ int	***read_data(const int fd)
 	int **arr;
 
 	ans = (int***)malloc(sizeof(int**));
-
+	return (ans);
 }
