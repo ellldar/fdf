@@ -11,30 +11,64 @@
 /* ************************************************************************** */
 
 #include "../fdf.h"
+#include <time.h>
 
-void	draw_line(t_scope *scope, int x0, int y0, int x1, int y1)
+void	put_pixel(t_scope *scope, int x, int y, int color)
 {
-	int i;
+	t_image	*image;
+	char	*addr;
+	int 	pos;
 
-	i = 0;
-	while(i < 100)
+	image = scope->image;
+	addr = image->addr;
+	pos = y * image->line_size + x * (image->bits_ppxl / 8);
+	addr += pos;
+	*(unsigned int*)addr = color;
+}
+
+void	draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
+{
+	float	dx;
+	float	dy;
+	int		step;
+	float	x0;
+	float	y0;
+	int		i;
+	int 	alpha;
+	float	ratio;
+
+	if (x1 > 0 && x1 < scope->width && y1 > 0 && y1 < scope->height)
 	{
-		mlx_pixel_put(scope->mlx_ptr, scope->win_ptr, x0 + i, y0 + i, 0xFFFFFF);
-		i++;
+		ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+		dx = x1 - x;
+		dy = y1 - y;
+		if (ft_abs(dx) >= ft_abs(dy))
+			step = ft_abs(dx);
+		else
+			step = ft_abs(dy);
+		dx = dx / (float)step;
+		dy = dy / (float)step;
+		x0 = x;
+		y0 = y;
+		i = 0;
+		alpha = 0;
+		while (i <= step)
+		{
+			ratio = 0.5 - dy / 2;
+			alpha = (int)(255 * (ratio / 0.5));
+			put_pixel(scope, round(x0), round(y0), (ft_abs(alpha) << 24) + 0x00FFFFFF);
+			x0 += dx;
+			y0 += dy;
+			i++;
+		}
+		render(scope);
 	}
 }
 
-void	draw_circle(t_scope *scope, int x, int y, int r)
+void 	render(t_scope *scope)
 {
-	int x0;
-	int y0;
+	t_image	*img;
 
-	x0 = -r;
-	while (x0 < r)
-	{
-		y0 = (int)sqrt((double)(pow(r, 2) - pow(x0, 2)));
-		mlx_pixel_put(scope->mlx_ptr, scope->win_ptr, x + x0, y + y0, 0xFFFFFF);
-		mlx_pixel_put(scope->mlx_ptr, scope->win_ptr, x + x0, y - y0, 0xFFFFFF);
-		x0++;
-	}
-};
+	img = scope->image;
+	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img->ptr, 0, 0);
+}

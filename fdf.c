@@ -12,55 +12,34 @@
 
 #include "fdf.h"
 
-static void	init_hooks(t_scope *scope, t_key *key, t_mouse *mouse)
+static void	init_hooks(t_scope *scope)
 {
 	mlx_do_key_autorepeatoff(scope->mlx_ptr);
 	mlx_hook(scope->win_ptr, 2, 0, key_press, scope);
 	mlx_hook(scope->win_ptr, 3, 0, key_release, scope);
 	mlx_hook(scope->win_ptr, 4, 0, mouse_press, scope);
 	mlx_hook(scope->win_ptr, 5, 0, mouse_release, scope);
-//	mlx_hook(scope->win_ptr, 6, 0, motion_track, scope);
+	mlx_hook(scope->win_ptr, 6, 0, mouse_move, scope);
 //	mlx_hook(scope->win_ptr, 12, 0, expose_hook, scope);
 //	mlx_hook(scope->win_ptr, 17, 0, exit_hook, scope);
 }
 
-static void	init_event_handler(t_scope *scope, int width, int height)
-{
-	void	*img_ptr;
-	t_key	*key;
-	t_mouse	*mouse;
-	int 	r;
-
-	img_ptr = mlx_new_image(scope->win_ptr, width, height);
-	scope->img_ptr = img_ptr;
-	draw_line(scope, 100, 100, 500, 300);
-	r = 0;
-	while (r < 350)
-	{
-		draw_circle(scope, 600, 400, r);
-		r += 10;
-	}
-	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img_ptr, 0, 0);
-	init_hooks(scope, key, mouse);
-}
-
 int			main(int argc, char **argv)
 {
+	int 	fd;
 	void	*mlx_ptr;
 	void	*win_ptr;
-	int 	fd;
-	int 	***data;
 	t_scope	*scope;
 
 	if (argc == 2)
 	{
 		if ((fd = open(argv[1], O_RDONLY)) <= 0)
 			return (0);
-		data = read_data(fd);
 		mlx_ptr = mlx_init();
 		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
 		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);
-		init_event_handler(scope, 1200, 800);
+        scope->image = init_image(scope, 1200, 800);
+        init_hooks(scope);
 		mlx_loop(mlx_ptr);
 	}
 	else

@@ -79,7 +79,11 @@ int mouse_release(int button, int x, int y, t_scope *scope)
 
 int mouse_move(int x, int y, t_scope *scope)
 {
-//	if (scope->pressed == 1)
-//		mlx_pixel_put(scope->mlx_ptr, scope->win_ptr, x, y, 0xFFFFFF);
+	ft_putstr("mouse motion detected: (");
+	ft_putnbr(x);
+	ft_putstr(", ");
+	ft_putnbr(y);
+	ft_putstr(")\n");
+	draw_line(scope, 600, 400, x, y, 0x00FFFF);
 	return (0);
 }

@@ -17,25 +17,24 @@
 # include "minilibx_macos/mlx.h"
 # include <math.h>
 
+typedef struct	s_image
+{
+	void	*ptr;
+	char	*addr;
+	int		bits_ppxl;
+	int		line_size;
+	int		endian;
+}				t_image;
+
 typedef struct	s_scope
 {
     void	*mlx_ptr;
     void	*win_ptr;
-    void	*img_ptr;
+    t_image	*image;
+	int		width;
+	int		height;
 	int		x;
 	int		y;
-	int		mouse_event:1;
-	int		mouse_pressed:1;
-	int		mouse_released:1;
-	int		mouse_move:1;
-	int		mouse_hold:1;
-	int		key_event:1;
-	int		key_pressed:1;
-	int		key_released:1;
-	int		key_hold:1;
-	int		***arr;
-	int     width;
-	int     height;
 }				t_scope;
 
 typedef struct	s_scene
@@ -64,32 +63,38 @@ typedef struct	s_mouse
  * -------- READ DATA FUNCTIONS --------------
  */
 
-int			***read_data(const int fd);
+
+/*
+ * -------- INITIALIZER FUNCTIONS --------------
+ */
+
+t_image		*init_image(t_scope *scope, int width, int height);
+t_scope		*init_scope(void *mlx_ptr, void *win_ptr, int width, int height);
 
 /*
  * -------- INPUT FUNCTIONS --------------
  */
 
-int         deal_key(int key, t_scope *scope);
-int         key_press(int button, t_scope *scope);
-int         key_release(int button, t_scope *scope);
-int         deal_mouse(int button, int x, int y, t_scope *scope);
-int         mouse_press(int button, int x, int y, t_scope *scope);
-int         mouse_release(int button, int x, int y, t_scope *scope);
-int         mouse_move(int x, int y, t_scope *scope);
+int			deal_key(int key, t_scope *scope);
+int			key_press(int button, t_scope *scope);
+int			key_release(int button, t_scope *scope);
+int			deal_mouse(int button, int x, int y, t_scope *scope);
+int			mouse_press(int button, int x, int y, t_scope *scope);
+int			mouse_release(int button, int x, int y, t_scope *scope);
+int			mouse_move(int x, int y, t_scope *scope);
 
 /*
  * -------- DISPLAY FUNCTIONS --------------
  */
 
-void	    draw_line(t_scope *scope, int x0, int y0, int x1, int y1);
-void		draw_circle(t_scope *scope, int x, int y, int r);
+void		put_pixel(t_scope *scope, int x, int y, int color);
+void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
+void		render(t_scope *scope);
 
 /*
  * -------- HELPER FUNCTIONS --------------
  */
 
-t_scope	    *init_scope(void *mlx_ptr, void *win_ptr, int x, int y);
 int			get_direction(int n1, int n2);
 
 #endif

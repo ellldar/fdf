@@ -12,11 +12,3 @@
 
 #include "../fdf.h"
 
-int	***read_data(const int fd)
-{
-	int ***ans;
-	int **arr;
-
-	ans = (int***)malloc(sizeof(int**));
-	return (ans);
-}
