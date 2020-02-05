@@ -39,6 +39,8 @@ int			main(int argc, char **argv)
 		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
 		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);
         scope->image = init_image(scope, 1200, 800);
+//        draw_line_aa(scope, 200, 200, 700, 220, 0xFFFFFF);
+//        render(scope);
         init_hooks(scope);
 		mlx_loop(mlx_ptr);
 	}

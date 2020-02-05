@@ -21,11 +21,6 @@ int		get_direction(int n1, int n2)
 	return (0);
 }
 
-int		get_slope(int dir1, int dir2)
-{
-	return (dir1 * dir2);
-}
-
 t_image	*init_image(t_scope *scope, int width, int height)
 {
 	t_image	*image;
