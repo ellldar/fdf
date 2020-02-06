@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../fdf.h"
-#include <stdio.h>
 
 void	put_pixel(t_scope *scope, int x, int y, int color)
 {
@@ -40,7 +39,7 @@ void	draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 
 	if (x1 > 0 && x1 < scope->width && y1 > 0 && y1 < scope->height)
 	{
-		ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+//		ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
 		dx = x1 - x;
 		dy = y1 - y;
 		if (ft_abs(dx) >= ft_abs(dy))
@@ -72,14 +71,20 @@ void	draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 			y0 += dy;
 			i++;
 		}
-		render(scope);
+		render_image(scope);
 	}
 }
 
-void 	render(t_scope *scope)
+void 	render_image(t_scope *scope)
 {
 	t_image	*img;
 
 	img = scope->image;
 	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img->ptr, 0, 0);
+}
+
+void	clear_image(t_scope *scope)
+{
+	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+	render_image(scope);
 }

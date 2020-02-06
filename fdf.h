@@ -17,6 +17,10 @@
 # include "minilibx_macos/mlx.h"
 # include <math.h>
 
+#include <time.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 typedef struct	s_image
 {
 	void	*ptr;
@@ -33,8 +37,10 @@ typedef struct	s_scope
     t_image	*image;
 	int		width;
 	int		height;
-	int		x;
-	int		y;
+	int		color;
+	int		mouse_pressed:1;
+	int		mouse_button:2;
+	int		key_pressed:1;
 }				t_scope;
 
 typedef struct	s_scene
@@ -89,7 +95,8 @@ int			mouse_move(int x, int y, t_scope *scope);
 
 void		put_pixel(t_scope *scope, int x, int y, int color);
 void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
-void		render(t_scope *scope);
+void		render_image(t_scope *scope);
+void		clear_image(t_scope *scope);
 
 /*
  * -------- HELPER FUNCTIONS --------------
