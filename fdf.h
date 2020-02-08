@@ -30,17 +30,31 @@ typedef struct	s_image
 	int		endian;
 }				t_image;
 
+typedef struct	s_line
+{
+	float	x;
+	float	dx;
+	float	y;
+	float	dy;
+	int		step;
+	float	ratio;
+	int		alpha;
+	int		reverse_alpha;
+}				t_line;
+
 typedef struct	s_scope
 {
     void	*mlx_ptr;
     void	*win_ptr;
     t_image	*image;
+    t_line	*line;
 	int		width;
 	int		height;
 	int		color;
 	int		mouse_pressed:1;
 	int		mouse_button:2;
 	int		key_pressed:1;
+	int		key_button:4;
 }				t_scope;
 
 typedef struct	s_scene
@@ -103,5 +117,6 @@ void		clear_image(t_scope *scope);
  */
 
 int			get_direction(int n1, int n2);
+int			is_inbound(int x, int y, t_scope *scope);
 
 #endif
