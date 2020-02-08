@@ -12,7 +12,11 @@
 
 #include "../fdf.h"
 
-void	put_pixel(t_scope *scope, int x, int y, int color)
+static void	calc_linevar(t_line *var, int x, int y, int x1, int y1);
+static void	calc_antialias(t_line *var, int color);
+static void	put_second_pixel(t_scope *scope);
+
+void		put_pixel(t_scope *scope, int x, int y, int color)
 {
 	t_image	*image;
 	char	*addr;
@@ -25,53 +29,66 @@ void	put_pixel(t_scope *scope, int x, int y, int color)
 	*(unsigned int*)addr = color;
 }
 
-void	draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
+void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 {
 	t_line	*line;
 	int		i;
-	int 	alpha;
-	int 	rev_alpha;
-	float	ratio;
 
 //	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+	i = 0;
 	line = scope->line;
 	calc_linevar(line, x, y, x1, y1);
-	i = 0;
-	alpha = 0;
 	while (i <= line->step)
 	{
-		if (line->ratio != 0.0 && ((x0 != x && x0 != x1) || (y0 != y && y0 != y1)))
+		calc_antialias(line, color);
+		if (line->ratio != 0.0 && !is_endpoint(line, x, y, x1, y1))
 		{
-			alpha = ft_abs(round(0x7F * (ratio / 0.5)));
-			rev_alpha = ((0xFF - alpha) << 24) + color;
-			put_pixel(scope, round(x0), round(y0), (alpha << 24) + color);
-			if (ft_abs(dx) >= ft_abs(dy))
-				put_pixel(scope, round(x0), round(y0) + get_direction(0, (int)(ratio * 1000)), rev_alpha);
-			else
-				put_pixel(scope, round(x0) + get_direction(0, (int)(ratio * 1000)), round(y0), rev_alpha);
+			put_pixel(scope, round(line->x), round(line->y), line->alpha);
+			put_second_pixel(scope);
 		}
 		else
-			put_pixel(scope, round(x0), round(y0), color);
-		x0 += dx;
-		y0 += dy;
+			put_pixel(scope, round(line->x), round(line->y), color);
+		line->x += line->dx;
+		line->y += line->dy;
 		i++;
 	}
 	render_image(scope);
 }
 
-void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
+static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
 {
 	var->step = abs(x1 - x) >= abs(y1 - y) ? abs(x1 - x) : abs(y1 - y);
 	var->dx = (x1 - x) / (float)var->step;
 	var->dy = (y1 - y) / (float)var->step;
 	var->x = (float)x;
 	var->y = (float)y;
+	var->alpha = 0;
 }
 
-void	calc_antialias(t_line *var)
+static void	calc_antialias(t_line *var, int color)
 {
-	if (abs(var->dx) >= abs(var->dy))
+	if (fabsf(var->dx) >= fabsf(var->dy))
 		var->ratio = var->y - (float)round(var->y);
 	else
 		var->ratio = var->x - (float)round(var->x);
+	var->alpha = (int)(round(0x7F * fabs(var->ratio / 0.5)));
+	var->reverse_alpha = ((0xFF - var->alpha) << 24) + color;
+	var->alpha = (var->alpha << 24) + color;
+}
+
+static void	put_second_pixel(t_scope *scope)
+{
+	t_line	*line;
+	int 	offset;
+	int 	x;
+	int 	y;
+
+	line = scope->line;
+	x = round(line->x);
+	y = round(line->y);
+	offset = get_direction(0, (int)(line->ratio * 1000));
+	if (fabsf(line->dx) >= fabsf(line->dy))
+		put_pixel(scope, x, y + offset, line->reverse_alpha);
+	else
+		put_pixel(scope, x + offset, y, line->reverse_alpha);
 }

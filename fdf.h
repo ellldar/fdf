@@ -117,6 +117,7 @@ void		clear_image(t_scope *scope);
  */
 
 int			get_direction(int n1, int n2);
-int			is_inbound(int x, int y, t_scope *scope);
+int			is_confined(t_scope *scope, int x, int y);
+int			is_endpoint(t_line *var, int x, int y, int x1, int y1);
 
 #endif

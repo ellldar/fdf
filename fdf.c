@@ -35,7 +35,7 @@ int			main(int argc, char **argv)
 	{
 		if ((fd = open(argv[1], O_RDONLY)) <= 0)
 			return (0);
-//		srand(time(0));
+		srand(time(0));
 		mlx_ptr = mlx_init();
 		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
 		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);

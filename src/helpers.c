@@ -21,9 +21,17 @@ int		get_direction(int n1, int n2)
 	return (0);
 }
 
-int		is_inbound(int x, int y, t_scope *scope)
+int		is_confined(t_scope *scope, int x, int y)
 {
 	return(x >= 0 && x < scope->width && y >= 0 && y < scope->height);
 }
 
-int
+int		is_endpoint(t_line *var, int x, int y, int x1, int y1)
+{
+	float	x0;
+	float	y0;
+
+	x0 = var->x;
+	y0 = var->y;
+	return ((x0 == x && y0 != y) || (x0 == x1 && y0 == y1));
+}

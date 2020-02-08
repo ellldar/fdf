@@ -26,7 +26,7 @@ int mouse_press(int button, int x, int y, t_scope *scope)
 	printf("Mouse Button: %i\n", button);
 	if (button == 1)
 	{
-//		scope->color = ((rand() % 0xFF) << 16) + ((rand() % 0xFF) << 8) + (rand() % 0xFF);
+		scope->color = ((rand() % 0xFF) << 16) + ((rand() % 0xFF) << 8) + (rand() % 0xFF);
 		draw_line(scope, 600, 400, x, y, scope->color);
 	}
 	else if (button == 2)
@@ -45,7 +45,7 @@ int mouse_release(int button, int x, int y, t_scope *scope)
 
 int mouse_move(int x, int y, t_scope *scope)
 {
-	if (is_inbound(x, y, scope))
+	if (is_confined(scope, x, y))
 	{
 		if (scope->mouse_pressed && scope->mouse_button == 1)
 			draw_line(scope, 600, 400, x, y, scope->color);
