@@ -34,7 +34,7 @@ void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 	t_line	*line;
 	int		i;
 
-	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+//	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
 	i = 0;
 	line = scope->line;
 	calc_linevar(line, x, y, x1, y1);
@@ -52,7 +52,7 @@ void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 		line->y += line->dy;
 		i++;
 	}
-	render_image(scope);
+//	render_image(scope);
 }
 
 static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)

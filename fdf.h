@@ -107,6 +107,7 @@ int			mouse_move(int x, int y, t_scope *scope);
  * -------- DISPLAY FUNCTIONS --------------
  */
 
+void		draw_3d_obj(t_scope *scope, int *map[]);
 void		put_pixel(t_scope *scope, int x, int y, int color);
 void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
 void		render_image(t_scope *scope);

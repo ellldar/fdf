@@ -30,6 +30,13 @@ int			main(int argc, char **argv)
 	void	*mlx_ptr;
 	void	*win_ptr;
 	t_scope	*scope;
+	static int	*map[] = {
+			{0, 0, 0, 0, 0},
+			{0, 10, 10, 10, 0},
+			{0, 10, 0, 10, 0},
+			{0, 10, 10, 10, 0},
+			{0, 0, 0, 0, 0}
+	};
 
 	if (argc == 2)
 	{
@@ -40,6 +47,7 @@ int			main(int argc, char **argv)
 		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
 		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);
         scope->image = init_image(scope, 1200, 800);
+        draw_3d_obj(scope, map);
         init_hooks(scope);
 		mlx_loop(mlx_ptr);
 	}

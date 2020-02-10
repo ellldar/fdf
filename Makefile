@@ -1,5 +1,6 @@
 NAME = fdf
-SRCS = fdf.c src/read_ops.c src/key_ops.c src/mouse_ops.c src/draw_ops.c src/init_ops.c src/helpers.c
+SRCS = fdf.c src/read_ops.c src/key_ops.c src/mouse_ops.c src/draw_ops.c \
+       src/init_ops.c src/helpers.c src/graph3d_ops.c
 FLGS = -Wall -Werror -Wextra
 SANIT = -fsanitize=address
 HDR = -I.
