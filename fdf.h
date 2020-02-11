@@ -21,6 +21,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+# define ERR_1 "File couldn't be read!"
+
+typedef struct	s_file
+{
+	int		col;
+	int		row;
+	t_list	*list;
+	t_list	*head;
+}				t_file;
+
 typedef struct	s_image
 {
 	void	*ptr;
@@ -42,47 +52,45 @@ typedef struct	s_line
 	int		reverse_alpha;
 }				t_line;
 
+typedef struct	s_node
+{
+	int		x;
+	int		y;
+	int		z;
+}				t_node;
+
+typedef struct	s_map
+{
+	int		row;
+	int		col;
+	int		scale;
+	t_node	**matrix3d;
+	t_node	**matrix2d;
+}				t_map;
+
 typedef struct	s_scope
 {
     void	*mlx_ptr;
     void	*win_ptr;
     t_image	*image;
     t_line	*line;
+    t_map	*map;
 	int		width;
 	int		height;
 	int		color;
+	int		x;
+	int		y;
 	int		mouse_pressed:1;
 	int		mouse_button:2;
 	int		key_pressed:1;
 	int		key_button:4;
 }				t_scope;
 
-typedef struct	s_scene
-{
-	int		x_angle;
-	int		y_angle;
-	int		z_angle;
-	int		ratio;
-}				t_scene;
-
-typedef struct	s_key
-{
-	int		button;
-	int		x;
-	int		y;
-}				t_key;
-
-typedef struct	s_mouse
-{
-	int		button;
-	int		x;
-	int		y;
-}				t_mouse;
-
 /*
  * -------- READ DATA FUNCTIONS --------------
  */
 
+t_map		*read_map(t_scope *scope, const int fd);
 
 /*
  * -------- INITIALIZER FUNCTIONS --------------
@@ -90,6 +98,7 @@ typedef struct	s_mouse
 
 t_image		*init_image(t_scope *scope, int width, int height);
 t_scope		*init_scope(void *mlx_ptr, void *win_ptr, int width, int height);
+t_map		*init_map(t_scope *scope, t_file *file);
 
 /*
  * -------- INPUT FUNCTIONS --------------
@@ -107,8 +116,8 @@ int			mouse_move(int x, int y, t_scope *scope);
  * -------- DISPLAY FUNCTIONS --------------
  */
 
-void		draw_3d_obj(t_scope *scope, int *map[]);
-void		put_pixel(t_scope *scope, int x, int y, int color);
+void		draw_3d_obj(t_scope *scope, t_map *map);
+void		interpolate(t_scope *scope, t_map *map, int x1, int y1);
 void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
 void		render_image(t_scope *scope);
 void		clear_image(t_scope *scope);

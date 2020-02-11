@@ -1,6 +1,6 @@
 NAME = fdf
 SRCS = fdf.c src/read_ops.c src/key_ops.c src/mouse_ops.c src/draw_ops.c \
-       src/init_ops.c src/helpers.c src/graph3d_ops.c
+       src/init_ops.c src/helpers.c src/graph3d_ops.c libft/ft_lstnew.c
 FLGS = -Wall -Werror -Wextra
 SANIT = -fsanitize=address
 HDR = -I.
@@ -20,8 +20,11 @@ $(NAME): $(SRCS) $(LIBFT) $(LIBX) $(INPUT)
 	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX)
 	./$(NAME) $(INPUT)
 
-$(LIBFT):
+$(LIBFT): $(SUBMODULE)
 	@make -C $(LIBFT_DIR)
+
+$(SUBMODULE):
+	git submodule update --init
 
 $(LIBX):
 	@make -C $(LIBX_DIR)

@@ -12,36 +12,39 @@
 
 #include "../fdf.h"
 
-void	draw_3d_obj(t_scope *scope, int *map[])
+void	draw_3d_obj(t_scope *scope, t_map *map)
 {
 	int center_x;
 	int center_y;
-	int z_distance = 100;
-	int n = 5;
 	int i, j;
-	int scale;
 	int x;
 	int y;
+	t_node	*node;
 
 	center_x = scope->width / 2;
 	center_y = scope->height / 2;
 	i = 0;
-	scale = 100;
 	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
-	while (i <= n)
+	while (i < map->row)
 	{
 		j = 0;
-		while (j <= n)
+		node = map->matrix2d[i];
+		while (j < map->col)
 		{
-			x = (center_x - (n * scale / 2) + j * scale);
-			y = (center_y - (n * scale / 2) + i * scale);
-			if (i != n)
-				draw_line(scope, x, y, x, y + scale, 0xFFFFFF);
-			if (j != n)
-				draw_line(scope, x, y, x + scale, y, 0xFFFFFF);
+			x = (center_x - (map->col * map->scale / 2) + node[j].x * map->scale);
+			y = (center_y - (map->row * map->scale / 2) + node[j].y * map->scale);
+			if (i != map->row - 1)
+				draw_line(scope, x, y, x, y + map->scale, 0xFFFFFF);
+			if (j != map->col - 1)
+				draw_line(scope, x, y, x + map->scale, y, 0xFFFFFF);
 			j++;
 		}
 		i++;
 	}
 	render_image(scope);
+}
+
+void	interpolate(t_scope *scope, t_map *map, int x1, int y1)
+{
+
 }

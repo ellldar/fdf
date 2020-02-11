@@ -36,6 +36,29 @@ t_scope *init_scope(void *mlx_ptr, void *win_ptr, int width, int height)
     return (scope);
 }
 
+t_map	*init_map(t_scope *scope, t_file *file)
+{
+	t_map	*map;
+	t_node	**arr;
+	int 	i;
+	int 	j;
+
+	map = (t_map*)malloc(sizeof(t_map));
+	map->row = file->row;
+	map->col = file->col;
+	map->scale = 20;
+	map->matrix3d = (t_node**)malloc(sizeof(t_node*) * map->row);
+	arr = map->matrix3d;
+	i = 0;
+	while (i < map->row)
+	{
+		*arr = (t_node*)malloc(sizeof(t_node) * map->col);
+		arr++;
+		i++;
+	}
+	return (map);
+}
+
 void 	render_image(t_scope *scope)
 {
 	t_image	*img;

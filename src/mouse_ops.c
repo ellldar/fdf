@@ -26,8 +26,8 @@ int mouse_press(int button, int x, int y, t_scope *scope)
 	printf("Mouse Button: %i\n", button);
 	if (button == 1)
 	{
-		scope->color = ((rand() % 0xFF) << 16) + ((rand() % 0xFF) << 8) + (rand() % 0xFF);
-		draw_line(scope, 600, 400, x, y, scope->color);
+		scope->x = x;
+		scope->y = y;
 	}
 	else if (button == 2)
 		clear_image(scope);
@@ -45,10 +45,18 @@ int mouse_release(int button, int x, int y, t_scope *scope)
 
 int mouse_move(int x, int y, t_scope *scope)
 {
+	static t_map	*tmp = NULL;
+
+	if (!tmp)
+		tmp = (t_map*)malloc(sizeof(scope->map));
 	if (is_confined(scope, x, y))
 	{
-		if (scope->mouse_pressed && scope->mouse_button == 1)
-			draw_line(scope, 600, 400, x, y, scope->color);
+//		tmp = ft_memcpy(tmp, scope->map->data, sizeof(scope->map->data));
+//		if (scope->mouse_pressed && scope->mouse_button == 1)
+//		{
+//			interpolate(scope, tmp, x, y);
+//			draw_3d_obj(scope, tmp);
+//		}
 	}
 	return (0);
 }

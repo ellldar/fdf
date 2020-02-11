@@ -12,11 +12,7 @@
 
 #include "../fdf.h"
 
-static void	calc_linevar(t_line *var, int x, int y, int x1, int y1);
-static void	calc_antialias(t_line *var, int color);
-static void	put_second_pixel(t_scope *scope);
-
-void		put_pixel(t_scope *scope, int x, int y, int color)
+static void	put_pixel(t_scope *scope, int x, int y, int color)
 {
 	t_image	*image;
 	char	*addr;
@@ -27,32 +23,6 @@ void		put_pixel(t_scope *scope, int x, int y, int color)
 	pos = y * image->line_size + x * (image->bits_ppxl / 8);
 	addr += pos;
 	*(unsigned int*)addr = color;
-}
-
-void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
-{
-	t_line	*line;
-	int		i;
-
-//	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
-	i = 0;
-	line = scope->line;
-	calc_linevar(line, x, y, x1, y1);
-	while (i <= line->step)
-	{
-		calc_antialias(line, color);
-		if (line->alpha != color && !is_endpoint(line, x, y, x1, y1))
-		{
-			put_pixel(scope, round(line->x), round(line->y), line->alpha);
-			put_second_pixel(scope);
-		}
-		else
-			put_pixel(scope, round(line->x), round(line->y), color);
-		line->x += line->dx;
-		line->y += line->dy;
-		i++;
-	}
-//	render_image(scope);
 }
 
 static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
@@ -103,3 +73,31 @@ static void	put_second_pixel(t_scope *scope)
 	else
 		put_pixel(scope, x + offset, y, line->reverse_alpha);
 }
+
+void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
+{
+	t_line	*line;
+	int		i;
+
+//	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
+	i = 0;
+	line = scope->line;
+	calc_linevar(line, x, y, x1, y1);
+	while (i <= line->step)
+	{
+		calc_antialias(line, color);
+		if (line->alpha != color && !is_endpoint(line, x, y, x1, y1))
+		{
+			put_pixel(scope, round(line->x), round(line->y), line->alpha);
+			put_second_pixel(scope);
+		}
+		else
+			put_pixel(scope, round(line->x), round(line->y), color);
+		line->x += line->dx;
+		line->y += line->dy;
+		i++;
+	}
+//	render_image(scope);
+}
+
+
