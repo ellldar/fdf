@@ -14,6 +14,8 @@
 
 static void	init_hooks(t_scope *scope)
 {
+	scope->key = (t_key*)malloc(sizeof(t_key));
+	scope->mouse = (t_mouse*)malloc(sizeof(t_mouse));
 	mlx_do_key_autorepeatoff(scope->mlx_ptr);
 	mlx_hook(scope->win_ptr, 2, 0, key_press, scope);
 	mlx_hook(scope->win_ptr, 3, 0, key_release, scope);
@@ -36,11 +38,10 @@ int			main(int argc, char **argv)
 		if ((fd = open(argv[1], O_RDONLY)) <= 0)
 			return (0);
 		mlx_ptr = mlx_init();
-		win_ptr = mlx_new_window(mlx_ptr, 1200, 800, "FDF");
-		scope = init_scope(mlx_ptr, win_ptr, 1200, 800);
+		win_ptr = mlx_new_window(mlx_ptr, WIDTH, HEIGHT, "FDF");
+		scope = init_scope(mlx_ptr, win_ptr, WIDTH, HEIGHT);
         scope->image = init_image(scope, 1200, 800);
-        scope->map = read_map(scope, fd);
-        // draw_3d_obj(scope, scope->map);
+        read_map(scope, fd);
         init_hooks(scope);
 		mlx_loop(mlx_ptr);
 	}

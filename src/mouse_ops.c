@@ -12,23 +12,17 @@
 
 #include "../fdf.h"
 
-int	deal_mouse(int button, int x, int y, t_scope *scope)
-{
-	return (0);
-}
-
 int mouse_press(int button, int x, int y, t_scope *scope)
 {
-	int color;
+	t_mouse	*mouse;
 
-	scope->mouse_button = button;
-	scope->mouse_pressed = 1;
-	printf("Mouse Button: %i\n", button);
+	mouse = scope->mouse;
+	printf("Mouse Button: %i\n", mouse->button);
+	mouse->pressed = 1;
+	mouse->x1 = x;
+	mouse->y1 = y;
 	if (button == 1)
-	{
-		scope->x = x;
-		scope->y = y;
-	}
+		mouse->button = button;
 	else if (button == 2)
 		clear_image(scope);
 	ft_putstr("pressed a mouse button\n");
@@ -37,26 +31,46 @@ int mouse_press(int button, int x, int y, t_scope *scope)
 
 int mouse_release(int button, int x, int y, t_scope *scope)
 {
-	scope->mouse_pressed = 0;
-	scope->mouse_button = 0;
+	size_t	size;
+	t_mouse	*mouse;
+	t_node	**map;
+	t_node	**tmp;
+
+	map = scope->map->matrix3d;
+	tmp = scope->map->matrix3d_temp;
+	mouse = scope->mouse;
+	size = scope->map->row * scope->map->col;
+	if (button == 1)
+		ft_memcpy(map, tmp, sizeof(t_node) * size);
+	mouse->pressed = 0;
+	mouse->button = 0;
 	ft_putstr("release a mouse button\n");
 	return (0);
 }
 
 int mouse_move(int x, int y, t_scope *scope)
 {
-	static t_map	*tmp = NULL;
+	size_t	size;
+	t_mouse	*mouse;
+	t_node	**map;
+	t_node	**tmp;
 
-	if (!tmp)
-		tmp = (t_map*)malloc(sizeof(scope->map));
-	if (is_confined(scope, x, y))
+	map = scope->map->matrix3d;
+	tmp = scope->map->matrix3d_temp;
+	size = scope->map->row * scope->map->col;
+	ft_memcpy(tmp, map, sizeof(t_node) * size);
+	mouse = scope->mouse;
+	mouse->x2 = x;
+	mouse->y2 = y;
+	calc_rotation(mouse);
+	if (is_confined(scope, x, y) && mouse->pressed)
 	{
-//		tmp = ft_memcpy(tmp, scope->map->data, sizeof(scope->map->data));
-//		if (scope->mouse_pressed && scope->mouse_button == 1)
-//		{
-//			interpolate(scope, tmp, x, y);
-//			draw_3d_obj(scope, tmp);
-//		}
+		if (scope->mouse->button == 1)
+		{
+			interpolate(scope);
+			draw_3d_obj(scope);
+		}
+		printf("(%i, %i, %i, %i)\n", mouse->x1, mouse->y1, mouse->x2, mouse->y2);
 	}
 	return (0);
 }

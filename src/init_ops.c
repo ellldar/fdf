@@ -39,35 +39,29 @@ t_scope *init_scope(void *mlx_ptr, void *win_ptr, int width, int height)
 t_map	*init_map(t_scope *scope, t_file *file)
 {
 	t_map	*map;
-	t_node	**arr;
+	t_node	**arr2d;
+	t_node	**arr3d;
+	t_node	**tmp3d;
 	int 	i;
-	int 	j;
 
 	map = (t_map*)malloc(sizeof(t_map));
+	map->scale = SCALE;
 	map->row = file->row;
 	map->col = file->col;
-	map->scale = 20;
+	map->matrix2d = (t_node**)malloc(sizeof(t_node*) * map->row);
 	map->matrix3d = (t_node**)malloc(sizeof(t_node*) * map->row);
-	arr = map->matrix3d;
+	map->matrix3d_temp = (t_node**)malloc(sizeof(t_node*) * map->row);
+	arr2d = map->matrix2d;
+	arr3d = map->matrix3d;
+	tmp3d = map->matrix3d_temp;
 	i = 0;
 	while (i < map->row)
 	{
-		*arr = (t_node*)malloc(sizeof(t_node) * map->col);
-		arr++;
+		*arr2d++ = (t_node*)malloc(sizeof(t_node) * map->col);
+		*arr3d++ = (t_node*)malloc(sizeof(t_node) * map->col);
+		*tmp3d++ = (t_node*)malloc(sizeof(t_node) * map->col);
 		i++;
 	}
 	return (map);
 }
 
-void 	render_image(t_scope *scope)
-{
-	t_image	*img;
-
-	img = scope->image;
-	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img->ptr, 0, 0);
-}
-
-void	clear_image(t_scope *scope)
-{
-	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
-}

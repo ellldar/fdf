@@ -19,15 +19,15 @@ int	deal_key(int key, t_scope *scope)
 
 int key_press(int button, t_scope *scope)
 {
-	scope->key_pressed = 1;
+	scope->key->pressed = 1;
     ft_putstr("pressed a key button\n");
-    deal_key(button, scope);
+    deal_key(scope->key->button, scope);
     return (0);
 }
 
 int key_release(int button, t_scope *scope)
 {
-	scope->key_pressed = 0;
+	scope->key->pressed = 0;
     ft_putstr("release a key button\n");
     return (0);
 }

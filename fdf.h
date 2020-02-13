@@ -17,11 +17,15 @@
 # include "minilibx_macos/mlx.h"
 # include <math.h>
 
-#include <time.h>
-#include <stdlib.h>
-#include <stdio.h>
+# include <time.h>
+# include <stdlib.h>
+# include <stdio.h>
 
-# define ERR_1 "File couldn't be read!"
+# define WIDTH 1200
+# define HEIGHT 800
+# define CENT_X 600
+# define CENT_Y 400
+# define SCALE 20
 
 typedef struct	s_file
 {
@@ -65,8 +69,29 @@ typedef struct	s_map
 	int		col;
 	int		scale;
 	t_node	**matrix3d;
+	t_node	**matrix3d_temp;
 	t_node	**matrix2d;
 }				t_map;
+
+typedef struct	s_mouse
+{
+	int		x1;
+	int		y1;
+	int		x2;
+	int		y2;
+	int		dx;
+	int		dy;
+	float	rot_x;
+	float	rot_y;
+	int		pressed:1;
+	int		button:2;
+}				t_mouse;
+
+typedef struct	s_key
+{
+	int		pressed:1;
+	int		button:4;
+}				t_key;
 
 typedef struct	s_scope
 {
@@ -75,22 +100,18 @@ typedef struct	s_scope
     t_image	*image;
     t_line	*line;
     t_map	*map;
+    t_mouse	*mouse;
+    t_key	*key;
 	int		width;
 	int		height;
 	int		color;
-	int		x;
-	int		y;
-	int		mouse_pressed:1;
-	int		mouse_button:2;
-	int		key_pressed:1;
-	int		key_button:4;
 }				t_scope;
 
 /*
  * -------- READ DATA FUNCTIONS --------------
  */
 
-t_map		*read_map(t_scope *scope, const int fd);
+void		read_map(t_scope *scope, const int fd);
 
 /*
  * -------- INITIALIZER FUNCTIONS --------------
@@ -101,7 +122,7 @@ t_scope		*init_scope(void *mlx_ptr, void *win_ptr, int width, int height);
 t_map		*init_map(t_scope *scope, t_file *file);
 
 /*
- * -------- INPUT FUNCTIONS --------------
+ * -------- INPUT FUNCTIONS ----------------
  */
 
 int			deal_key(int key, t_scope *scope);
@@ -113,11 +134,17 @@ int			mouse_release(int button, int x, int y, t_scope *scope);
 int			mouse_move(int x, int y, t_scope *scope);
 
 /*
+ * -------- MATH FUNCTIONS -----------------
+ */
+
+void		calc_rotation(t_mouse *mouse);
+void		interpolate(t_scope *scope);
+
+/*
  * -------- DISPLAY FUNCTIONS --------------
  */
 
-void		draw_3d_obj(t_scope *scope, t_map *map);
-void		interpolate(t_scope *scope, t_map *map, int x1, int y1);
+void		draw_3d_obj(t_scope *scope);
 void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
 void		render_image(t_scope *scope);
 void		clear_image(t_scope *scope);

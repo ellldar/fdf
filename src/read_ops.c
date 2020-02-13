@@ -68,15 +68,17 @@ static void	add_row_to_list(t_file *file, char *line)
 	free(arr);
 }
 
-static void	extrapolate_file(t_scope *scope, t_file *file, t_map *map)
+static void	extrapolate_file(t_scope *scope, t_file *file)
 {
 	int 	i;
 	int 	j;
 	t_list 	*curr;
 	int 	*row;
+	t_map	*map;
 
 	i = 0;
 	curr = file->head;
+	map = scope->map;
 	while (i < map->row)
 	{
 		j = 0;
@@ -118,11 +120,10 @@ static void	print_map(t_map *map)
 	}
 }
 
-t_map		*read_map(t_scope *scope, const int fd)
+void		read_map(t_scope *scope, const int fd)
 {
 	int		ret;
 	char 	*line;
-	t_map	*map;
 	t_file	*file;
 
 	file = (t_file*)malloc(sizeof(t_file));
@@ -135,8 +136,7 @@ t_map		*read_map(t_scope *scope, const int fd)
 		add_row_to_list(file, line);
 		free(line);
 	}
-	map = init_map(scope, file);
-	extrapolate_file(scope, file, map);
-	print_map(map);
-	return (map);
+	scope->map = init_map(scope, file);
+	extrapolate_file(scope, file);
+	print_map(scope->map);
 }
