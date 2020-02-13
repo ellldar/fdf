@@ -68,7 +68,7 @@ static void	add_row_to_list(t_file *file, char *line)
 	free(arr);
 }
 
-static void	extrapolate_file(t_scope *scope, t_file *file)
+static void		extrapolate_file(t_scope *scope, t_file *file)
 {
 	int 	i;
 	int 	j;
@@ -85,37 +85,12 @@ static void	extrapolate_file(t_scope *scope, t_file *file)
 		row = (int*)(curr->content);
 		while (j < map->col)
 		{
-			map->matrix3d[i][j].x = scope->width / 2 -
-					(map->col * map->scale / 2) + j * map->scale;
-			map->matrix3d[i][j].y = scope->height / 2 -
-					(map->row * map->scale / 2) + i * map->scale;
-			map->matrix3d[i][j].z = (row[j] * map->scale) - 200;
+			map->matrix3d[i][j].x = j * map->scale - (map->col * map->scale / 2);
+			map->matrix3d[i][j].y = i * map->scale - (map->row * map->scale / 2);
+			map->matrix3d[i][j].z = (row[j] * map->scale / 2);
 			j++;
 		}
 		curr = curr->next;
-		i++;
-	}
-}
-
-static void	print_map(t_map *map)
-{
-	int 	i;
-	int 	j;
-	t_node	**arr;
-	t_node	node;
-
-	i = 0;
-	arr = map->matrix3d;
-	while (i < map->row)
-	{
-		j = 0;
-		while (j < map->col)
-		{
-			node = arr[i][j];
-			printf("(%i, %i, %i)\n", node.x, node.y, node.z);
-			j++;
-		}
-		printf("\n");
 		i++;
 	}
 }
@@ -138,5 +113,5 @@ void		read_map(t_scope *scope, const int fd)
 	}
 	scope->map = init_map(scope, file);
 	extrapolate_file(scope, file);
-	print_map(scope->map);
+	close(fd);
 }

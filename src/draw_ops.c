@@ -14,15 +14,14 @@
 
 static void	put_pixel(t_scope *scope, int x, int y, int color)
 {
-	t_image	*image;
 	char	*addr;
-	int 	pos;
 
-	image = scope->image;
-	addr = image->addr;
-	pos = y * image->line_size + x * (image->bits_ppxl / 8);
-	addr += pos;
-	*(unsigned int*)addr = color;
+	if (is_confined(scope, x, y))
+	{
+		addr = scope->image->addr;
+		addr += y * scope->image->line_size + x * (scope->image->bits_ppxl / 8);
+		*(unsigned int*)addr = color;
+	}
 }
 
 static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
@@ -79,7 +78,6 @@ void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 	t_line	*line;
 	int		i;
 
-//	ft_bzero(scope->image->addr, scope->height * scope->image->line_size);
 	i = 0;
 	line = scope->line;
 	calc_linevar(line, x, y, x1, y1);
@@ -97,7 +95,6 @@ void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
 		line->y += line->dy;
 		i++;
 	}
-//	render_image(scope);
 }
 
 

@@ -58,9 +58,9 @@ typedef struct	s_line
 
 typedef struct	s_node
 {
-	int		x;
-	int		y;
-	int		z;
+	float	x;
+	float	y;
+	float	z;
 }				t_node;
 
 typedef struct	s_map
@@ -69,7 +69,6 @@ typedef struct	s_map
 	int		col;
 	int		scale;
 	t_node	**matrix3d;
-	t_node	**matrix3d_temp;
 	t_node	**matrix2d;
 }				t_map;
 
@@ -79,8 +78,6 @@ typedef struct	s_mouse
 	int		y1;
 	int		x2;
 	int		y2;
-	int		dx;
-	int		dy;
 	float	rot_x;
 	float	rot_y;
 	int		pressed:1;
@@ -95,13 +92,13 @@ typedef struct	s_key
 
 typedef struct	s_scope
 {
-    void	*mlx_ptr;
-    void	*win_ptr;
-    t_image	*image;
-    t_line	*line;
-    t_map	*map;
-    t_mouse	*mouse;
-    t_key	*key;
+	void	*mlx_ptr;
+	void	*win_ptr;
+	t_image	*image;
+	t_line	*line;
+	t_mouse	*mouse;
+	t_key	*key;
+	t_map	*map;
 	int		width;
 	int		height;
 	int		color;

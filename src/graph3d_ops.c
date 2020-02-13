@@ -12,33 +12,50 @@
 
 #include "../fdf.h"
 
-static void	project_3d_to_2d(t_scope *scope, t_map *map)
+static void	project_3d_to_2d(t_map *map)
 {
 	t_node	**map2d;
 	t_node	**map3d;
-	int		size;
+	int 	i;
+	int 	j;
 
-	size = map->row * map->col;
-	map2d = ft_memcpy(map2d, map3d, sizeof(t_node) * size);
+	map2d = map->matrix2d;
+	map3d = map->matrix3d;
+	i = 0;
+	while (i < map->row)
+	{
+		j = 0;
+		while (j < map->col)
+		{
+			map2d[i][j].x = CENT_X + 700 * map3d[i][j].x / (25 * map->scale - map3d[i][j].z);
+			map2d[i][j].y = CENT_Y + 700 * map3d[i][j].y / (25 * map->scale - map3d[i][j].z);
+			j++;
+		}
+		i++;
+	}
 }
 
 static void	draw_frame(t_scope *scope, t_map *map)
 {
 	int 	i;
 	int 	j;
-	t_node	*node;
+	t_node	**node;
 
 	i = 0;
 	while (i < map->row)
 	{
 		j = 0;
-		node = map->matrix2d[i];
+		node = map->matrix2d;
 		while (j < map->col)
 		{
 			if (i != map->row - 1)
-				draw_line(scope, node[j].x, node[j].y, node[j].x, node[j + 1].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j].x, node[i + 1][j].y, 0xFFFFFF);
 			if (j != map->col - 1)
-				draw_line(scope, node[j].x, node[j].y, node[j + 1].x, node[j].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i][j + 1].x, node[i][j + 1].y, 0xFFFFFF);
+			if (i != map->row - 1 && j != map->col - 1)
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j + 1].x, node[i + 1][j + 1].y, 0xFFFFFF);
+			if (i != map->row - 1 && j > 0)
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j - 1].x, node[i + 1][j - 1].y, 0xFFFFFF);
 			j++;
 		}
 		i++;
@@ -47,21 +64,17 @@ static void	draw_frame(t_scope *scope, t_map *map)
 
 void		draw_3d_obj(t_scope *scope)
 {
-	t_map	*map;
-
-	map = scope->map;
-	clear_image(scope);
-	project_3d_to_2d(scope, map);
-	draw_frame(scope, map);
-	render_image(scope);
+	project_3d_to_2d(scope->map);
+	draw_frame(scope, scope->map);
 }
 
 void 		render_image(t_scope *scope)
 {
-	t_image	*img;
-
-	img = scope->image;
-	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, img->ptr, 0, 0);
+	clear_image(scope);
+	calc_rotation(scope->mouse);
+	interpolate(scope);
+	draw_3d_obj(scope);
+	mlx_put_image_to_window(scope->mlx_ptr, scope->win_ptr, scope->image->ptr, 0, 0);
 }
 
 void		clear_image(t_scope *scope)

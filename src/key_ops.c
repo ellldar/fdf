@@ -14,13 +14,15 @@
 
 int	deal_key(int key, t_scope *scope)
 {
+	if (key == 53)
+		mlx_destroy_window(scope->mlx_ptr, scope->win_ptr);
     return (0);
 }
 
 int key_press(int button, t_scope *scope)
 {
 	scope->key->pressed = 1;
-    ft_putstr("pressed a key button\n");
+    printf("Pressed a key #%i button\n", button);
     deal_key(scope->key->button, scope);
     return (0);
 }
@@ -28,6 +30,6 @@ int key_press(int button, t_scope *scope)
 int key_release(int button, t_scope *scope)
 {
 	scope->key->pressed = 0;
-    ft_putstr("release a key button\n");
+    printf("Released a key\n");
     return (0);
 }

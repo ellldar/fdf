@@ -14,8 +14,6 @@
 
 static void	init_hooks(t_scope *scope)
 {
-	scope->key = (t_key*)malloc(sizeof(t_key));
-	scope->mouse = (t_mouse*)malloc(sizeof(t_mouse));
 	mlx_do_key_autorepeatoff(scope->mlx_ptr);
 	mlx_hook(scope->win_ptr, 2, 0, key_press, scope);
 	mlx_hook(scope->win_ptr, 3, 0, key_release, scope);
@@ -42,6 +40,8 @@ int			main(int argc, char **argv)
 		scope = init_scope(mlx_ptr, win_ptr, WIDTH, HEIGHT);
         scope->image = init_image(scope, 1200, 800);
         read_map(scope, fd);
+        draw_3d_obj(scope);
+        render_image(scope);
         init_hooks(scope);
 		mlx_loop(mlx_ptr);
 	}
