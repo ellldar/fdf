@@ -44,11 +44,13 @@ typedef struct	s_image
 
 typedef struct	s_line
 {
-	float	x;
+	float	x1;
+	float	x2;
 	float	dx;
-	float	y;
+	float	y1;
+	float	y2;
 	float	dy;
-	int		step;
+	float	step;
 	float	ratio;
 	int		alpha;
 	int		reverse_alpha;
@@ -138,14 +140,14 @@ int			mouse_move(int x, int y, t_scope *scope);
 
 void		calc_rotation(t_mouse *mouse);
 void		interpolate(t_scope *scope);
-int			validate_points(int *x, int *y, int *x1, int *y1);
+int			validate_points(t_line *line);
 
 /*
  * -------- DISPLAY FUNCTIONS --------------
  */
 
 void		draw_3d_obj(t_scope *scope);
-void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1);
+void		draw_line(t_scope *scope, t_line *line);
 void		render_image(t_scope *scope);
 void		clear_image(t_scope *scope);
 
@@ -155,8 +157,9 @@ void		clear_image(t_scope *scope);
 
 int			get_direction(int n1, int n2);
 int			is_confined(t_scope *scope, int x, int y);
-int			is_endpoint(t_line *var, int x, int y, int x1, int y1);
+int			is_endpoint(t_line *line, int x, int y);
 int			calc_scale(t_scope *scope, int row, int col);
 void		resize_map(t_scope *scope, int incr);
+t_line		*make_line(t_line *line, t_node node1, t_node node2);
 
 #endif

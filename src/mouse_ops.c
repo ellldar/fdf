@@ -52,9 +52,11 @@ int 		mouse_release(int button, int x, int y, t_scope *scope)
 
 int 		mouse_move(int x, int y, t_scope *scope)
 {
-	if (is_confined(scope, x, y) && scope->mouse->pressed && scope->mouse->button == 1)
+	if (is_confined(scope, x, y) && scope->mouse->pressed &&
+									scope->mouse->button == 1)
 	{
-		if (scope->key->pressed && (scope->key->button == 257 || scope->key->button == 258))
+		if (scope->key->pressed && (scope->key->button == 257 ||
+									scope->key->button == 258))
 		{
 			scope->map->cent_x += (x - scope->mouse->x1);
 			scope->map->cent_y += (y - scope->mouse->y1);

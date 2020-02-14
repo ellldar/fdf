@@ -19,54 +19,53 @@ static void	put_pixel(t_scope *scope, int x, int y, int color)
 	if (is_confined(scope, x, y))
 	{
 		addr = scope->image->addr;
-		addr += y * scope->image->line_size + x * (scope->image->bits_ppxl / 8);
+		addr += y * scope->image->line_size +
+				x * (scope->image->bits_ppxl / 8);
 		*(unsigned int*)addr = color;
 	}
 }
 
-static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
+static void	calc_linevar(t_line *line, float *x, float *y)
 {
-
-	var->alpha = 0;
-	var->step = abs(x1 - x) >= abs(y1 - y) ? abs(x1 - x) : abs(y1 - y);
-	var->dx = (x1 - x) / (float)var->step;
-	var->dy = (y1 - y) / (float)var->step;
-	var->x = (float)x;
-	var->y = (float)y;
+	line->alpha = 0;
+	line->step = fabsf(line->x2 - line->x1) >= fabsf(line->y2 - line->y1)
+			? fabsf(line->x2 - line->x1) : fabsf(line->y2 - line->y1);
+	line->dx = (line->x2 - line->x1) / line->step;
+	line->dy = (line->y2 - line->y1) / line->step;
+	*x = line->x1;
+	*y = line->y1;
 }
 
-static void	calc_antialias(t_line *var, int color)
+static void	calc_antialias(t_line *line, int color)
 {
 	int alpha;
 
 	alpha = color;
-	if (fabsf(var->dx) >= fabsf(var->dy))
-		var->ratio = var->y - (float)round(var->y);
+	if (fabsf(line->dx) >= fabsf(line->dy))
+		line->ratio = line->y1 - round(line->y1);
 	else
-		var->ratio = var->x - (float)round(var->x);
-	if (fabsf(var->ratio) > 0.02)
+		line->ratio = line->x1 - round(line->x1);
+	if (fabsf(line->ratio) > 0.02)
 	{
-		alpha = (int)(round(0x7F * fabs(var->ratio / 0.5)));
-		var->reverse_alpha = ((0xFF - alpha) << 24) + color;
-		var->alpha = (alpha << 24) + color;
+		alpha = (int)(round(0x7F * fabs(line->ratio / 0.5)));
+		line->reverse_alpha = ((0xFF - alpha) << 24) + color;
+		line->alpha = (alpha << 24) + color;
 	}
 	else
 	{
-		var->alpha = alpha;
-		var->reverse_alpha = 0;
+		line->alpha = alpha;
+		line->reverse_alpha = 0;
 	}
 }
 
-static void	put_second_pixel(t_scope *scope)
+static void	put_second_pixel(t_scope *scope, float x, float y)
 {
 	t_line	*line;
 	int 	offset;
-	int 	x;
-	int 	y;
 
 	line = scope->line;
-	x = round(line->x);
-	y = round(line->y);
+	x = round(x);
+	y = round(y);
 	offset = get_direction(0, (int)(line->ratio * 1000));
 	if (fabsf(line->dx) >= fabsf(line->dy))
 		put_pixel(scope, x, y + offset, line->reverse_alpha);
@@ -74,28 +73,28 @@ static void	put_second_pixel(t_scope *scope)
 		put_pixel(scope, x + offset, y, line->reverse_alpha);
 }
 
-void		draw_line(t_scope *scope, int x, int y, int x1, int y1)
+void		draw_line(t_scope *scope, t_line *line)
 {
-	t_line	*line;
 	int		i;
+	float	x;
+	float	y;
 
 	i = 0;
-	line = scope->line;
-	if (validate_points(&x, &y, &x1, &y1))
+	if (validate_points(line))
 	{
-		calc_linevar(line, x, y, x1, y1);
+		calc_linevar(line, &x, &y);
 		while (i <= line->step)
 		{
 			calc_antialias(line, scope->color);
-			if (line->alpha != scope->color && !is_endpoint(line, x, y, x1, y1))
+			if (line->alpha != scope->color && !is_endpoint(line, x, y))
 			{
-				put_pixel(scope, round(line->x), round(line->y), line->alpha);
-				put_second_pixel(scope);
+				put_pixel(scope, round(x), round(y), line->alpha);
+				put_second_pixel(scope, round(x), round(y));
 			}
 			else
-				put_pixel(scope, round(line->x), round(line->y), scope->color);
-			line->x += line->dx;
-			line->y += line->dy;
+				put_pixel(scope, round(x), round(y), scope->color);
+			x += line->dx;
+			y += line->dy;
 			i++;
 		}
 	}

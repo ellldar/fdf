@@ -18,7 +18,7 @@ all: $(NAME)
 
 $(NAME): $(SRCS) $(LIBFT) $(LIBX) $(INPUT)
 	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX)
-# 	./$(NAME) $(INPUT)
+	./$(NAME) $(INPUT)
 
 $(LIBFT): $(SUBMODULE)
 	@make -C $(LIBFT_DIR)

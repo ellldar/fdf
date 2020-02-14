@@ -26,14 +26,9 @@ int		is_confined(t_scope *scope, int x, int y)
 	return(x >= 0 && x < scope->width && y >= 0 && y < scope->height);
 }
 
-int		is_endpoint(t_line *var, int x, int y, int x1, int y1)
+int		is_endpoint(t_line *line, int x, int y)
 {
-	float	x0;
-	float	y0;
-
-	x0 = var->x;
-	y0 = var->y;
-	return ((x0 == x && y0 != y) || (x0 == x1 && y0 == y1));
+	return ((x == line->x1 && y == line->y1) || (x == line->x2 && y == line->y2));
 }
 
 int		calc_scale(t_scope *scope, int row, int col)
