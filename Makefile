@@ -18,11 +18,9 @@ all: $(NAME)
 $(NAME): $(SRCS) $(LIBFT) $(LIBX) $(INPUT)
 	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX)
 
-$(LIBFT): $(SUBMODULE)
-	@make -C $(LIBFT_DIR)
-
-$(SUBMODULE):
+$(LIBFT):
 	git submodule update --init
+	@make -C $(LIBFT_DIR)
 
 $(LIBX):
 	@make -C $(LIBX_DIR)
