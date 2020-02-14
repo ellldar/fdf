@@ -1,6 +1,6 @@
 NAME = fdf
 SRCS = fdf.c src/read_ops.c src/key_ops.c src/mouse_ops.c src/draw_ops.c \
-       src/init_ops.c src/helpers.c src/graph3d_ops.c src/math_ops.c
+       src/init_ops.c src/helpers.c src/graph3d_ops.c src/math_ops.c src/coord_ops.c
 FLGS = -Wall -Werror -Wextra
 SANIT = -fsanitize=address
 HDR = -I.
@@ -10,7 +10,7 @@ LIBS = -L ./$(LIBFT_DIR) -lft -L ./$(LIBX_DIR) -lmlx
 LIBFT = $(LIBFT_DIR)/libft.a
 LIBX = $(LIBX_DIR)/libmlx.a
 MLX = -framework OpenGL -framework AppKit
-INPUT = test_maps/mars.fdf
+INPUT = sample.fdf
 
 .PHONY: all clean fclean re
 

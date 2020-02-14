@@ -18,17 +18,19 @@ static void	project_3d_to_2d(t_map *map)
 	t_node	**map3d;
 	int 	i;
 	int 	j;
+	int 	p;
 
 	map2d = map->matrix2d;
 	map3d = map->matrix3d;
+	p = map->persp;
 	i = 0;
 	while (i < map->row)
 	{
 		j = 0;
 		while (j < map->col)
 		{
-			map2d[i][j].x = CENT_X + 700 * map3d[i][j].x / (25 * map->scale - map3d[i][j].z);
-			map2d[i][j].y = CENT_Y + 700 * map3d[i][j].y / (25 * map->scale - map3d[i][j].z);
+			map2d[i][j].x = map->cent_x + map->scale * p * map3d[i][j].x / (p * map->scale - map3d[i][j].z);
+			map2d[i][j].y = map->cent_y + map->scale * p * map3d[i][j].y / (p * map->scale - map3d[i][j].z);
 			j++;
 		}
 		i++;
@@ -49,13 +51,13 @@ static void	draw_frame(t_scope *scope, t_map *map)
 		while (j < map->col)
 		{
 			if (i != map->row - 1)
-				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j].x, node[i + 1][j].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j].x, node[i + 1][j].y);
 			if (j != map->col - 1)
-				draw_line(scope, node[i][j].x, node[i][j].y, node[i][j + 1].x, node[i][j + 1].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i][j + 1].x, node[i][j + 1].y);
 			if (i != map->row - 1 && j != map->col - 1)
-				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j + 1].x, node[i + 1][j + 1].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j + 1].x, node[i + 1][j + 1].y);
 			if (i != map->row - 1 && j > 0)
-				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j - 1].x, node[i + 1][j - 1].y, 0xFFFFFF);
+				draw_line(scope, node[i][j].x, node[i][j].y, node[i + 1][j - 1].x, node[i + 1][j - 1].y);
 			j++;
 		}
 		i++;

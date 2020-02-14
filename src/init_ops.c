@@ -33,6 +33,7 @@ t_scope *init_scope(void *mlx_ptr, void *win_ptr, int width, int height)
     scope->width = width;
     scope->height = height;
     scope->line = (t_line*)malloc(sizeof(t_line));
+    scope->color = 0xFFFFFF;
     scope->mouse = (t_mouse*)malloc(sizeof(t_mouse));
 	ft_bzero(scope->mouse, sizeof(t_mouse));
 	scope->key = (t_key*)malloc(sizeof(t_key));
@@ -48,9 +49,12 @@ t_map	*init_map(t_scope *scope, t_file *file)
 	int 	i;
 
 	map = (t_map*)malloc(sizeof(t_map));
-	map->scale = SCALE;
+	map->persp = PERS;
+	map->cent_x = WIDTH / 2;
+	map->cent_y = HEIGHT / 2;
 	map->row = file->row;
 	map->col = file->col;
+	map->scale = calc_scale(scope, map->row, map->col);
 	map->matrix2d = (t_node**)malloc(sizeof(t_node*) * map->row);
 	map->matrix3d = (t_node**)malloc(sizeof(t_node*) * map->row);
 	arr2d = map->matrix2d;

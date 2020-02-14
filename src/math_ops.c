@@ -12,10 +12,6 @@
 
 #include "../fdf.h"
 
-/*
- * --------------   Rotating along the Y-axis --------------------
- */
-
 static void	apply_rotation_y(t_node *node, t_mouse *mouse)
 {
 	float x;
@@ -26,10 +22,6 @@ static void	apply_rotation_y(t_node *node, t_mouse *mouse)
 	node->x = x;
 	node->z = z;
 }
-
-/*
- * --------------   Rotating along the X-axis --------------------
- */
 
 static void	apply_rotation_x(t_node *node, t_mouse *mouse)
 {

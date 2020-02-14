@@ -23,9 +23,7 @@
 
 # define WIDTH 1200
 # define HEIGHT 800
-# define CENT_X 600
-# define CENT_Y 400
-# define SCALE 20
+# define PERS 25
 
 typedef struct	s_file
 {
@@ -68,6 +66,9 @@ typedef struct	s_map
 	int		row;
 	int		col;
 	int		scale;
+	int		persp;
+	int		cent_x;
+	int		cent_y;
 	t_node	**matrix3d;
 	t_node	**matrix2d;
 }				t_map;
@@ -87,7 +88,7 @@ typedef struct	s_mouse
 typedef struct	s_key
 {
 	int		pressed:1;
-	int		button:4;
+	int		button:10;
 }				t_key;
 
 typedef struct	s_scope
@@ -99,6 +100,7 @@ typedef struct	s_scope
 	t_mouse	*mouse;
 	t_key	*key;
 	t_map	*map;
+	t_file	*file;
 	int		width;
 	int		height;
 	int		color;
@@ -109,6 +111,7 @@ typedef struct	s_scope
  */
 
 void		read_map(t_scope *scope, const int fd);
+void		extrapolate_file(t_scope *scope, t_file *file);
 
 /*
  * -------- INITIALIZER FUNCTIONS --------------
@@ -125,7 +128,6 @@ t_map		*init_map(t_scope *scope, t_file *file);
 int			deal_key(int key, t_scope *scope);
 int			key_press(int button, t_scope *scope);
 int			key_release(int button, t_scope *scope);
-int			deal_mouse(int button, int x, int y, t_scope *scope);
 int			mouse_press(int button, int x, int y, t_scope *scope);
 int			mouse_release(int button, int x, int y, t_scope *scope);
 int			mouse_move(int x, int y, t_scope *scope);
@@ -136,13 +138,14 @@ int			mouse_move(int x, int y, t_scope *scope);
 
 void		calc_rotation(t_mouse *mouse);
 void		interpolate(t_scope *scope);
+int			validate_points(int *x, int *y, int *x1, int *y1);
 
 /*
  * -------- DISPLAY FUNCTIONS --------------
  */
 
 void		draw_3d_obj(t_scope *scope);
-void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1, int color);
+void		draw_line(t_scope *scope, int x0, int y0, int x1, int y1);
 void		render_image(t_scope *scope);
 void		clear_image(t_scope *scope);
 
@@ -153,5 +156,7 @@ void		clear_image(t_scope *scope);
 int			get_direction(int n1, int n2);
 int			is_confined(t_scope *scope, int x, int y);
 int			is_endpoint(t_line *var, int x, int y, int x1, int y1);
+int			calc_scale(t_scope *scope, int row, int col);
+void		resize_map(t_scope *scope, int incr);
 
 #endif

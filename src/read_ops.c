@@ -68,7 +68,7 @@ static void	add_row_to_list(t_file *file, char *line)
 	free(arr);
 }
 
-static void		extrapolate_file(t_scope *scope, t_file *file)
+void		extrapolate_file(t_scope *scope, t_file *file)
 {
 	int 	i;
 	int 	j;
@@ -87,7 +87,7 @@ static void		extrapolate_file(t_scope *scope, t_file *file)
 		{
 			map->matrix3d[i][j].x = j * map->scale - (map->col * map->scale / 2);
 			map->matrix3d[i][j].y = i * map->scale - (map->row * map->scale / 2);
-			map->matrix3d[i][j].z = (row[j] * map->scale / 2);
+			map->matrix3d[i][j].z = (float)(row[j] * map->scale / 2);
 			j++;
 		}
 		curr = curr->next;
@@ -111,6 +111,7 @@ void		read_map(t_scope *scope, const int fd)
 		add_row_to_list(file, line);
 		free(line);
 	}
+	scope->file = file;
 	scope->map = init_map(scope, file);
 	extrapolate_file(scope, file);
 	close(fd);

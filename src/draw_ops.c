@@ -26,12 +26,13 @@ static void	put_pixel(t_scope *scope, int x, int y, int color)
 
 static void	calc_linevar(t_line *var, int x, int y, int x1, int y1)
 {
+
+	var->alpha = 0;
 	var->step = abs(x1 - x) >= abs(y1 - y) ? abs(x1 - x) : abs(y1 - y);
 	var->dx = (x1 - x) / (float)var->step;
 	var->dy = (y1 - y) / (float)var->step;
 	var->x = (float)x;
 	var->y = (float)y;
-	var->alpha = 0;
 }
 
 static void	calc_antialias(t_line *var, int color)
@@ -73,27 +74,30 @@ static void	put_second_pixel(t_scope *scope)
 		put_pixel(scope, x + offset, y, line->reverse_alpha);
 }
 
-void		draw_line(t_scope *scope, int x, int y, int x1, int y1, int color)
+void		draw_line(t_scope *scope, int x, int y, int x1, int y1)
 {
 	t_line	*line;
 	int		i;
 
 	i = 0;
 	line = scope->line;
-	calc_linevar(line, x, y, x1, y1);
-	while (i <= line->step)
+	if (validate_points(&x, &y, &x1, &y1))
 	{
-		calc_antialias(line, color);
-		if (line->alpha != color && !is_endpoint(line, x, y, x1, y1))
+		calc_linevar(line, x, y, x1, y1);
+		while (i <= line->step)
 		{
-			put_pixel(scope, round(line->x), round(line->y), line->alpha);
-			put_second_pixel(scope);
+			calc_antialias(line, scope->color);
+			if (line->alpha != scope->color && !is_endpoint(line, x, y, x1, y1))
+			{
+				put_pixel(scope, round(line->x), round(line->y), line->alpha);
+				put_second_pixel(scope);
+			}
+			else
+				put_pixel(scope, round(line->x), round(line->y), scope->color);
+			line->x += line->dx;
+			line->y += line->dy;
+			i++;
 		}
-		else
-			put_pixel(scope, round(line->x), round(line->y), color);
-		line->x += line->dx;
-		line->y += line->dy;
-		i++;
 	}
 }
 
