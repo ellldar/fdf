@@ -14,11 +14,9 @@
 
 int			validate_points(t_line *line)
 {
-//	if (line->x >= 0 && x < WIDTH && *y >= 0 && *y < HEIGHT)
-//		return (1);
-//	if (*x1 >= 0 && *x1 < WIDTH && *y1 >= 0 && *y1 < HEIGHT)
-//		return (1);
-	return (1);
+	if (is_confined(line->x1, line->y1) || is_confined(line->x2, line->y2))
+		return (1);
+	return (0);
 }
 
 t_line		*make_line(t_line *line, t_node node1, t_node node2)
@@ -27,5 +25,21 @@ t_line		*make_line(t_line *line, t_node node1, t_node node2)
 	line->y1 = node1.y;
 	line->x2 = node2.x;
 	line->y2 = node2.y;
+	line->valid = node1.z > 0 ? 1 : 0;
 	return (line);
+}
+
+float		get_2d_coord(t_map *map, int center, float axis, float z)
+{
+	int		persp;
+	int		scale;
+	int		denom;
+	float	ans;
+
+	persp = map->persp;
+	scale = map->scale;
+	denom = (persp * scale - z);
+	denom = denom == 0 ? 1 : denom;
+	ans = center + scale * persp * axis / denom;
+	return (ans);
 }

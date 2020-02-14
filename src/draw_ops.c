@@ -16,7 +16,7 @@ static void	put_pixel(t_scope *scope, int x, int y, int color)
 {
 	char	*addr;
 
-	if (is_confined(scope, x, y))
+	if (is_confined(x, y))
 	{
 		addr = scope->image->addr;
 		addr += y * scope->image->line_size +
@@ -28,10 +28,18 @@ static void	put_pixel(t_scope *scope, int x, int y, int color)
 static void	calc_linevar(t_line *line, float *x, float *y)
 {
 	line->alpha = 0;
-	line->step = fabsf(line->x2 - line->x1) >= fabsf(line->y2 - line->y1)
-			? fabsf(line->x2 - line->x1) : fabsf(line->y2 - line->y1);
-	line->dx = (line->x2 - line->x1) / line->step;
-	line->dy = (line->y2 - line->y1) / line->step;
+	line->step = fabs(line->x2 - line->x1) >= fabs(line->y2 - line->y1)
+			? fabs(line->x2 - line->x1) : fabs(line->y2 - line->y1);
+	if (line->step == 0)
+	{
+		line->dx = 0;
+		line->dy = 0;
+	}
+	else
+	{
+		line->dx = (line->x2 - line->x1) / (float)line->step;
+		line->dy = (line->y2 - line->y1) / (float)line->step;
+	}
 	*x = line->x1;
 	*y = line->y1;
 }
@@ -41,11 +49,13 @@ static void	calc_antialias(t_line *line, int color)
 	int alpha;
 
 	alpha = color;
-	if (fabsf(line->dx) >= fabsf(line->dy))
+	if (fabsf(line->dx) > fabsf(line->dy))
 		line->ratio = line->y1 - round(line->y1);
-	else
+	else if (fabsf(line->dx) < fabsf(line->dy))
 		line->ratio = line->x1 - round(line->x1);
-	if (fabsf(line->ratio) > 0.02)
+	else
+		line->ratio = 0;
+	if (fabsf(line->ratio) > 0.0)
 	{
 		alpha = (int)(round(0x7F * fabs(line->ratio / 0.5)));
 		line->reverse_alpha = ((0xFF - alpha) << 24) + color;
@@ -61,7 +71,7 @@ static void	calc_antialias(t_line *line, int color)
 static void	put_second_pixel(t_scope *scope, float x, float y)
 {
 	t_line	*line;
-	int 	offset;
+	int		offset;
 
 	line = scope->line;
 	x = round(x);
@@ -80,7 +90,7 @@ void		draw_line(t_scope *scope, t_line *line)
 	float	y;
 
 	i = 0;
-	if (validate_points(line))
+	if (validate_points(line) && line->valid)
 	{
 		calc_linevar(line, &x, &y);
 		while (i <= line->step)
@@ -99,5 +109,3 @@ void		draw_line(t_scope *scope, t_line *line)
 		}
 	}
 }
-
-

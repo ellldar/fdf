@@ -36,8 +36,8 @@ static void	apply_rotation_x(t_node *node, t_mouse *mouse)
 
 void		interpolate(t_scope *scope)
 {
-	int 	i;
-	int 	j;
+	int		i;
+	int		j;
 	t_node	*node;
 
 	i = 0;
@@ -58,8 +58,10 @@ void		interpolate(t_scope *scope)
 	}
 }
 
-void		calc_rotation(t_mouse *mouse)
+void		set_z_range(t_range *z_range, int z)
 {
-	mouse->rot_y = (float)(get_direction(mouse->x2, mouse->x1)) / 20.0;
-	mouse->rot_x = (float)(get_direction(mouse->y1, mouse->y2)) / 20.0;
+	if (z < z_range->min)
+		z_range->min = z;
+	else if (z > z_range->max)
+		z_range->max = z;
 }

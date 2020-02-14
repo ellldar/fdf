@@ -10,7 +10,6 @@ LIBS = -L ./$(LIBFT_DIR) -lft -L ./$(LIBX_DIR) -lmlx
 LIBFT = $(LIBFT_DIR)/libft.a
 LIBX = $(LIBX_DIR)/libmlx.a
 MLX = -framework OpenGL -framework AppKit
-INPUT = sample.fdf
 
 .PHONY: all clean fclean re
 
@@ -18,7 +17,6 @@ all: $(NAME)
 
 $(NAME): $(SRCS) $(LIBFT) $(LIBX) $(INPUT)
 	gcc -o $(NAME) $(SRCS) $(HDR) $(LIBS) $(MLX)
-	./$(NAME) $(INPUT)
 
 $(LIBFT): $(SUBMODULE)
 	@make -C $(LIBFT_DIR)
@@ -49,4 +47,4 @@ fclean: clean
 re: fclean all
 
 norm:
-	norminette $(SRCS) $(HDR)
+	norminette $(SRCS) $(NAME).h

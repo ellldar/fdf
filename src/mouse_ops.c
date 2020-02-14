@@ -26,7 +26,7 @@ static void	mouse_reset(t_mouse *mouse)
 	mouse->button = 0;
 }
 
-int 		mouse_press(int button, int x, int y, t_scope *scope)
+int			mouse_press(int button, int x, int y, t_scope *scope)
 {
 	scope->mouse->pressed = 1;
 	scope->mouse->button = button;
@@ -43,17 +43,17 @@ int 		mouse_press(int button, int x, int y, t_scope *scope)
 	return (0);
 }
 
-int 		mouse_release(int button, int x, int y, t_scope *scope)
+int			mouse_release(int button, int x, int y, t_scope *scope)
 {
 	mouse_reset(scope->mouse);
 	mouse_set_xy(x, y, scope->mouse);
 	return (0);
 }
 
-int 		mouse_move(int x, int y, t_scope *scope)
+int			mouse_move(int x, int y, t_scope *scope)
 {
-	if (is_confined(scope, x, y) && scope->mouse->pressed &&
-									scope->mouse->button == 1)
+	if (is_confined(x, y) && scope->mouse->pressed &&
+		scope->mouse->button == 1)
 	{
 		if (scope->key->pressed && (scope->key->button == 257 ||
 									scope->key->button == 258))

@@ -14,8 +14,8 @@
 
 static int	count_col(const char *line)
 {
-	int	count;
-	char **arr;
+	int		count;
+	char	**arr;
 
 	count = 0;
 	arr = ft_strsplit(line, ' ');
@@ -24,12 +24,12 @@ static int	count_col(const char *line)
 	return (count);
 }
 
-static int	*read_row(const char *line)
+static int	*read_row(t_scope *scope, const char *line)
 {
-	char 	**arr;
-	char 	**ptr1;
-	int 	*ans;
-	int 	*ptr2;
+	char	**arr;
+	char	**ptr1;
+	int		*ans;
+	int		*ptr2;
 	int		count;
 
 	count = 0;
@@ -40,19 +40,21 @@ static int	*read_row(const char *line)
 	ans = (int*)malloc(sizeof(int) * count);
 	ptr2 = ans;
 	while (*arr)
-		*ptr2++ = ft_atoi(*arr++);
-	return(ans);
+	{
+		*ptr2 = ft_atoi(*arr++);
+		set_z_range(scope->z_range, *ptr2++);
+	}
+	return (ans);
 }
 
-static void	add_row_to_list(t_file *file, char *line)
+static void	add_row_to_list(t_scope *scope, t_file *file, char *line)
 {
 	t_list	*list;
-	int 	i = 0;
-	int 	*arr;
-	int 	val;
+	int		*arr;
+	int		val;
 
 	list = file->list;
-	arr = read_row(line);
+	arr = read_row(scope, line);
 	if (list)
 	{
 		list->next = ft_lstnew(arr, sizeof(int) * file->col);
@@ -70,10 +72,10 @@ static void	add_row_to_list(t_file *file, char *line)
 
 void		extrapolate_file(t_scope *scope, t_file *file)
 {
-	int 	i;
-	int 	j;
-	t_list 	*curr;
-	int 	*row;
+	int		i;
+	int		j;
+	t_list	*curr;
+	int		*row;
 	t_map	*map;
 
 	i = 0;
@@ -85,8 +87,10 @@ void		extrapolate_file(t_scope *scope, t_file *file)
 		row = (int*)(curr->content);
 		while (j < map->col)
 		{
-			map->matrix3d[i][j].x = j * map->scale - (map->col * map->scale / 2);
-			map->matrix3d[i][j].y = i * map->scale - (map->row * map->scale / 2);
+			map->matrix3d[i][j].x = j * map->scale -
+					(map->col * map->scale / 2);
+			map->matrix3d[i][j].y = i * map->scale -
+					(map->row * map->scale / 2);
 			map->matrix3d[i][j].z = (float)(row[j] * map->scale / 2);
 			j++;
 		}
@@ -98,17 +102,17 @@ void		extrapolate_file(t_scope *scope, t_file *file)
 void		read_map(t_scope *scope, const int fd)
 {
 	int		ret;
-	char 	*line;
+	char	*line;
 	t_file	*file;
 
 	file = (t_file*)malloc(sizeof(t_file));
 	file->list = NULL;
 	file->col = 0;
-	while((ret = get_next_line(fd, &line)))
+	while ((ret = get_next_line(fd, &line)))
 	{
 		if (!file->col)
 			file->col = count_col(line);
-		add_row_to_list(file, line);
+		add_row_to_list(scope, file, line);
 		free(line);
 	}
 	scope->file = file;
